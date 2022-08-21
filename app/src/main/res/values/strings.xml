@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">hydrate</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">Hydrate</string>
+    <string name="next">Add</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment"></string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+</resources>
