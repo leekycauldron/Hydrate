@@ -1,7 +1,7 @@
 package com.example.myapplication;
 
-import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,17 +13,32 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 
-import com.example.myapplication.databinding.FragmentFirstBinding;
+
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.File;
 
 public class FirstFragment extends Fragment {
 
-    private FragmentFirstBinding binding;
     EditText water;
     int waterAmt = 0;
     final int DAILY_MAX = 30000;
 
+    public void writeToFile(String data) {
+        try {
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"hydrate.txt");
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(file));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+            Log.d("FILE","Written.");
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e);
+        }
+    }
 
 
 
@@ -34,9 +49,7 @@ public class FirstFragment extends Fragment {
     ) {
 
 
-
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_first,container,false);
-        return view;
+        return LayoutInflater.from(getActivity()).inflate(R.layout.fragment_first,container,false);
 
     }
 
@@ -53,9 +66,9 @@ public class FirstFragment extends Fragment {
 
         view.findViewById(R.id.button_first).setOnClickListener(new View.OnClickListener() {
 
-            String text = "That is too much water!";
-            int duration = Toast.LENGTH_SHORT;
-            Toast overLimitToast = Toast.makeText(getContext(), text, duration);
+            final String text = "That is too much water!";
+            final int duration = Toast.LENGTH_SHORT;
+            final Toast overLimitToast = Toast.makeText(getContext(), text, duration);
 
             @Override
             public void onClick(View view) {
@@ -64,6 +77,7 @@ public class FirstFragment extends Fragment {
                     return;
                 }
                 waterAmt += Integer.parseInt(water.getText().toString());
+                writeToFile(String.valueOf(waterAmt));
                 Log.d("DBG","Added " + waterAmt  + "ml of water.");
 
                 waterView.setText(String.format("Today: %sml",waterAmt));
@@ -74,7 +88,7 @@ public class FirstFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+
     }
 
 }
