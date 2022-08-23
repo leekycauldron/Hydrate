@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.leekycauldron.hydrate;
 
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,21 +15,27 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 
-
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 
 public class FirstFragment extends Fragment {
 
     EditText water;
     int waterAmt = 0;
     final int DAILY_MAX = 30000;
+    String savedWater;
 
     public void writeToFile(String data) {
         try {
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"hydrate.txt");
+            Log.d("test",getContext().getFilesDir().toString());
+            File file = new File(getContext().getFilesDir(),"hydrate.txt");
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(file));
             outputStreamWriter.write(data);
             outputStreamWriter.close();
@@ -38,6 +44,25 @@ public class FirstFragment extends Fragment {
         catch (IOException e) {
             Log.e("Exception", "File write failed: " + e);
         }
+    }
+
+    public String readFile() throws IOException {
+        FileInputStream fis = getContext().openFileInput("hydrate.txt");
+        InputStreamReader isr = new InputStreamReader(fis);
+        BufferedReader bufferedReader = new BufferedReader(isr);
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while (true) {
+            try {
+                if (!((line = bufferedReader.readLine()) != null)) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            sb.append(line);
+        }
+        isr.close();
+        return sb.toString();
+        
     }
 
 
@@ -58,10 +83,24 @@ public class FirstFragment extends Fragment {
 
         super.onViewCreated(view, savedInstanceState);
 
-        water = view.findViewById(R.id.waterAmt);
+        water = view.findViewById(R.id.waterToAdd);
         TextView waterView = view.findViewById(R.id.waterView);
 
+        // Retrieve water data, if available.
+        try {
+            savedWater = readFile();
+            Log.d("HI","File Read: " + savedWater);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (savedWater != null) waterAmt = Integer.parseInt(savedWater);
         waterView.setText(String.format("Today: %sml",waterAmt));
+
+
+
 
 
         view.findViewById(R.id.button_first).setOnClickListener(new View.OnClickListener() {

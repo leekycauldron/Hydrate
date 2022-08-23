@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.leekycauldron.hydrate;
 
 import org.junit.Test;
 
