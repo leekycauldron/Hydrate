@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.Calendar;
@@ -30,8 +31,11 @@ import java.util.Date;
 public class FirstFragment extends Fragment {
 
     EditText water;
+    TextView goalView;
+    ProgressBar waterProgress;
     int waterAmt = 0;
     final int DAILY_MAX = 30000;
+    int DAILY_GOAL = 3700;
     String savedWater;
     Date currentTime = Calendar.getInstance().getTime();
     String currentDay = String.valueOf(currentTime.getDate());
@@ -100,6 +104,10 @@ public class FirstFragment extends Fragment {
 
         water = view.findViewById(R.id.waterToAdd);
         TextView waterView = view.findViewById(R.id.waterView);
+        goalView = view.findViewById(R.id.goalView);
+        waterProgress = view.findViewById(R.id.waterProgress);
+
+
         // Retrieve water data, if available.
         try {
             savedWater = readFile();
@@ -111,8 +119,11 @@ public class FirstFragment extends Fragment {
         }
 
         if (savedWater != null) waterAmt = Integer.parseInt(savedWater);
-        waterView.setText(String.format("Today: %sml",waterAmt));
+        waterView.setText(String.format("%sml",waterAmt));
 
+        // Set Progress Bar
+        waterProgress.setMax(DAILY_GOAL);
+        waterProgress.setProgress(waterAmt);
 
         view.findViewById(R.id.button_first).setOnClickListener(new View.OnClickListener() {
 
@@ -122,15 +133,16 @@ public class FirstFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
+                try{
                 if (waterAmt + Integer.parseInt(water.getText().toString()) > DAILY_MAX) {
                     overLimitToast.show();
                     return;
-                }
+                }} catch (Exception e) {return;}
                 waterAmt += Integer.parseInt(water.getText().toString());
                 writeToFile(String.valueOf(waterAmt)+","+currentDay);
                 Log.d("DBG","Added " + waterAmt  + "ml of water.");
-
-                waterView.setText(String.format("Today: %sml",waterAmt));
+                waterProgress.setProgress(waterAmt);
+                waterView.setText(String.format("%sml",waterAmt));
             }
         });
     }

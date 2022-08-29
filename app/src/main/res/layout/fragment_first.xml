@@ -8,18 +8,18 @@
 
     <TextView
         android:id="@+id/waterView"
-        android:layout_width="245dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
         android:textColor="#03A9F4"
         android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.096"
+        app:layout_constraintEnd_toStartOf="@+id/goalView"
+        app:layout_constraintHorizontal_bias="0.893"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.047" />
+        app:layout_constraintVertical_bias="0.046" />
 
     <Button
         android:id="@+id/button_first"
@@ -53,7 +53,7 @@
         app:layout_constraintVertical_bias="0.424" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/goalView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="/ 3700 ml"
@@ -64,4 +64,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.071" />
+
+    <ProgressBar
+        android:id="@+id/waterProgress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="166dp"
+        android:layout_height="42dp"
+        android:max="100"
+        android:progress="50"
+        android:progressTint="#FF0000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.14" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
