@@ -1,11 +1,15 @@
 package com.leekycauldron.hydrate;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -39,6 +43,27 @@ public class FirstFragment extends Fragment {
     String savedWater;
     Date currentTime = Calendar.getInstance().getTime();
     String currentDay = String.valueOf(currentTime.getDate());
+
+    public class ProgressBarAnimation extends Animation {
+        private ProgressBar progressBar;
+        private float from;
+        private float  to;
+
+        public ProgressBarAnimation(ProgressBar progressBar, float from, float to) {
+            super();
+            this.progressBar = progressBar;
+            this.from = from;
+            this.to = to;
+        }
+
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            super.applyTransformation(interpolatedTime, t);
+            float value = from + (to - from) * interpolatedTime;
+            progressBar.setProgress((int) value);
+        }
+
+    }
 
     public void writeToFile(String data) {
         try {
@@ -82,6 +107,15 @@ public class FirstFragment extends Fragment {
         
     }
 
+    public void setWaterProgress(int waterAmt) {
+        ProgressBarAnimation anim = new ProgressBarAnimation(waterProgress, waterProgress.getProgress(), waterAmt);
+        anim.setDuration(1000);
+        waterProgress.startAnimation(anim);
+        //int prcnt = waterProgress.getProgress()/waterProgress.getMax();
+        //if (0 < prcnt && prcnt < 25 ) waterProgress.getProgressDrawable().setColorFilter(0xFFFF0000);
+
+    }
+
 
 
 
@@ -123,7 +157,7 @@ public class FirstFragment extends Fragment {
 
         // Set Progress Bar
         waterProgress.setMax(DAILY_GOAL);
-        waterProgress.setProgress(waterAmt);
+        setWaterProgress(waterAmt);
 
         view.findViewById(R.id.button_first).setOnClickListener(new View.OnClickListener() {
 
@@ -141,7 +175,7 @@ public class FirstFragment extends Fragment {
                 waterAmt += Integer.parseInt(water.getText().toString());
                 writeToFile(String.valueOf(waterAmt)+","+currentDay);
                 Log.d("DBG","Added " + waterAmt  + "ml of water.");
-                waterProgress.setProgress(waterAmt);
+                setWaterProgress(waterAmt);
                 waterView.setText(String.format("%sml",waterAmt));
             }
         });
