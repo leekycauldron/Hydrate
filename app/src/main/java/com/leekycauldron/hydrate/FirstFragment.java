@@ -1,6 +1,7 @@
 package com.leekycauldron.hydrate;
 
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -111,9 +112,15 @@ public class FirstFragment extends Fragment {
         ProgressBarAnimation anim = new ProgressBarAnimation(waterProgress, waterProgress.getProgress(), waterAmt);
         anim.setDuration(1000);
         waterProgress.startAnimation(anim);
-        //int prcnt = waterProgress.getProgress()/waterProgress.getMax();
-        //if (0 < prcnt && prcnt < 25 ) waterProgress.getProgressDrawable().setColorFilter(0xFFFF0000);
-
+        waterProgress.setProgress(waterAmt);
+        double prcnt = Double.parseDouble(String.valueOf(waterProgress.getProgress())) / Double.parseDouble(String.valueOf(waterProgress.getMax()));
+        Log.d("a",String.valueOf(waterProgress.getMax()));
+        Log.d("w", String.valueOf(waterProgress.getProgress()));
+        Log.d("p",String.valueOf(prcnt));
+        if (0 <= prcnt && prcnt <= 0.25 ) waterProgress.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+        if (0.25 < prcnt && prcnt <= 0.50 ) waterProgress.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
+        if (0.75 < prcnt && prcnt < 1 ) waterProgress.getProgressDrawable().setColorFilter(Color.CYAN, PorterDuff.Mode.SRC_IN);
+        if (prcnt >= 1 ) waterProgress.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
     }
 
 
